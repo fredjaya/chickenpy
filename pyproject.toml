@@ -1,36 +1,26 @@
-[build-system]
-requires = ["flit_core>=3.4"]
-build-backend = "flit_core.buildapi"
-
 [project]
 name = "chickenpy"
-version = "0.0.1"
-authors = [
-    { name = "Fred Jaya" }
-]
+version = "0.1.0"
 description = "10X cooking simulator"
 readme = "README.md"
-requires-python = ">=3.12"
-classifiers = [
-    "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Operating System :: OS Independent",
+requires-python = ">=3.13"
+dependencies = [
+    "pygame>=2.6.1",
 ]
 
-[project.urls]
-Homepage = "https://github.com/fredjaya/chickenpy"
-Issues = "https://github.com/fredjaya/chickenpy/issues"
-
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "black",
-    "isort"
-]
-
-[tool.pytest.ini_options]
-testpaths = "tests"
-
-[tool.black]
+[tool.ruff]
+# Same as black
 line-length = 88
-target-version = ['py312']
+indent-width = 4
+
+[tool.ruff.format]
+# Same as black
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.3",
+    "ruff>=0.8.0",
+]
