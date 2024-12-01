@@ -1,6 +1,7 @@
 import pygame
 import globals
 import player
+import inventory
 
 
 class Game:
@@ -12,13 +13,17 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
         pygame.display.set_caption(title="ChickenPy")
-        self.player = player.Player()
+        self.play_bgm()
+        self.player = player.Player(self.screen)
+        self.inventory = inventory.Inventory(self.screen)
 
     def run(self):
         while self.running:
             self.update()
             self.draw()
-            self.blit_player()
+            self.player.blit()
+            self.player.input()
+            self.inventory.draw()
             pygame.display.flip()
             self.clock.tick(60)
         self.quit()
@@ -34,6 +39,11 @@ class Game:
 
     def blit_player(self):
         self.player.blit(self.screen)
+
+    def play_bgm(self):
+        pygame.mixer.init()
+        pygame.mixer.music.load("assets/el_bosque_gris.mp3")
+        pygame.mixer.music.play(1, 0.0, 3000)
 
     def quit(self):
         pygame.quit()
