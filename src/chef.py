@@ -1,13 +1,16 @@
-from typing import Union
-
 from chickenpy.inventory import Inventory
-from chickenpy.recipe import Recipe
+from chickenpy.recipe import RecipeBook
 
 
 class Chef:
-    def cook(self, recipe: Recipe, inventory: Inventory) -> Union[str, type]:
-        for i in recipe.ingredients:
+    def __init__(self, recipe_book: RecipeBook):
+        self.recipe_book = recipe_book
+
+    def cook(self, recipe: str, inventory: Inventory):
+        r = self.recipe_book[recipe]
+        # TODO: return list missing ingredients and quantities
+        for i in r.ingredients:
             if not inventory._check_item(i):
                 return f"There is not enough {i}."
             inventory.remove_item(i)
-        inventory.add_item(recipe.name)
+        inventory.add_item(recipe)

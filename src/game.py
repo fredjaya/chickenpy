@@ -7,12 +7,13 @@ import inventory
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         self.screen = pygame.display.set_mode(
             size=(globals.WINDOW_WIDTH, globals.WINDOW_HEIGHT)
         )
+        pygame.display.set_caption(title="ChickenPy")
         self.clock = pygame.time.Clock()
         self.running = True
-        pygame.display.set_caption(title="ChickenPy")
         self.play_bgm()
         self.player = player.Player(self.screen)
         self.inventory = inventory.Inventory(self.screen)
@@ -32,16 +33,11 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-        pygame.display.update()
 
     def draw(self):
         self.screen.fill("lightblue")
 
-    def blit_player(self):
-        self.player.blit(self.screen)
-
     def play_bgm(self):
-        pygame.mixer.init()
         pygame.mixer.music.load("assets/el_bosque_gris.mp3")
         pygame.mixer.music.play(1, 0.0, 3000)
 
