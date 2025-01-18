@@ -11,10 +11,21 @@ clock = pygame.time.Clock()
 running = True
 
 # orange box as placeholder
-carrot_surf = pygame.Surface((32, 32))
-carrot_surf.fill("orange")
-carrot_pos = (100, 100)
-carrot_rect = carrot_surf.get_rect(topleft=carrot_pos)
+butter_surf = pygame.Surface((64, 64))
+butter_surf.fill("yellow")
+butter_pos = (100, 100)
+butter_rect = butter_surf.get_rect(topleft=butter_pos)
+
+# attempt to make grid for item slots
+grid_totalsize = 96
+grid_padding = 6
+grid_x = [(x * grid_totalsize) + grid_padding for x in range(5)]
+grid_y = [(y * grid_totalsize) + grid_padding + 64 for y in range(6)]
+grid_pos = [(x, y) for y in grid_y for x in grid_x]
+
+grid_surf_size = grid_totalsize - grid_padding
+grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
+grid_surf.fill("grey")
 
 # when an item is clicked
 selected = False
@@ -27,21 +38,21 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
-            if carrot_rect.collidepoint(mouse_pos):
-                selected = carrot_rect
+            if butter_rect.collidepoint(mouse_pos):
+                selected = butter_rect
 
         if event.type == pygame.MOUSEBUTTONUP and selected:
             selected = False
 
         if event.type == pygame.MOUSEMOTION and selected:
             mouse_pos = event.pos
-            print(selected)
-            print(selected.center)
-            print(mouse_pos)
             selected.center = mouse_pos
 
     display_surface.fill("darkblue")
-    display_surface.blit(carrot_surf, carrot_rect)
+
+    for pos in grid_pos:
+        display_surface.blit(grid_surf, pos)
+    display_surface.blit(butter_surf, butter_rect)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
