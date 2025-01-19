@@ -1,4 +1,5 @@
 import pygame
+import math
 
 # globals
 WINDOW_WIDTH = 480
@@ -20,15 +21,24 @@ butter_rect = butter_surf.get_rect(topleft=butter_pos)
 grid_totalsize = 96
 grid_padding = 6
 grid_x = [(x * grid_totalsize) + grid_padding for x in range(5)]
-grid_y = [(y * grid_totalsize) + grid_padding + 64 for y in range(6)]
+grid_y = [(y * grid_totalsize) + grid_padding + 64 for y in range(5)]
 grid_pos = [(x, y) for y in grid_y for x in grid_x]
 
 grid_surf_size = grid_totalsize - grid_padding
 grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
 grid_surf.fill("grey")
+grid_rects = [grid_surf.get_rect(topleft=pos) for pos in grid_pos]
+grid_centers = [rect.center for rect in grid_rects]
 
-# when an item is clicked
-selected = False
+# when an item is clicked and dragged around
+selected_item = False
+
+
+def closest_center(main_rect: pygame.Rect, rects: list[pygame.Rect]) -> int:
+    # return the index of the grid that's closest to a single (mouse) position
+    dists = [math.dist(main_rect, center_pos) for center_pos in rects]
+    return dists.index(min(dists))
+
 
 # Game loop
 while running:
@@ -39,19 +49,23 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
             if butter_rect.collidepoint(mouse_pos):
-                selected = butter_rect
+                selected_item = butter_rect
 
-        if event.type == pygame.MOUSEBUTTONUP and selected:
-            selected = False
-
-        if event.type == pygame.MOUSEMOTION and selected:
+        if event.type == pygame.MOUSEBUTTONUP and selected_item:
+            # when dropping, snap to closest grid
             mouse_pos = event.pos
-            selected.center = mouse_pos
+            grid_idx = closest_center(mouse_pos, grid_centers)
+            selected_item.center = grid_centers[grid_idx]
+            selected_item = False
+
+        if event.type == pygame.MOUSEMOTION and selected_item:
+            mouse_pos = event.pos
+            selected_item.center = mouse_pos
 
     display_surface.fill("darkblue")
 
-    for pos in grid_pos:
-        display_surface.blit(grid_surf, pos)
+    for rect in grid_rects:
+        display_surface.blit(grid_surf, rect)
     display_surface.blit(butter_surf, butter_rect)
 
     # flip() the display to put your work on screen

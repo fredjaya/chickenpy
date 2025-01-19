@@ -21,5 +21,6 @@ line-ending = "auto"
 
 [dependency-groups]
 dev = [
+    "ipykernel>=6.29.5",
     "ruff>=0.8.0",
 ]

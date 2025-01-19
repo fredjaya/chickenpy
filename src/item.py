@@ -11,3 +11,4 @@ class Item:
 # roux = Recipe("roux", ["butter", "flour"])
 # bechamel = Recipe("bechamel", ["roux", "milk"])
 # mirepoix = Recipe("mirepoix", ["onion", "carrot", "celery"])
+# stock = Recipe("stock", ["bones", "mirepoix"])
