@@ -8,7 +8,7 @@ Uses [uv](https://docs.astral.sh/uv/) for project management.
 Linting and formatting:  
 
 ```bash
-uvx ruff check #--fix
+uvx ruff check --select I --fix
 uvx ruff format
 ```
 

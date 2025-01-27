@@ -1,9 +1,9 @@
-import pygame
 import math
 
-# globals
-WINDOW_WIDTH = 480
-WINDOW_HEIGHT = 800
+import pygame
+
+from chickenpy.globals import PIXEL_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
+from chickenpy.grid import Grid
 
 # basic setup and window
 pygame.init()
@@ -11,24 +11,23 @@ display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
-# orange box as placeholder
-butter_surf = pygame.Surface((64, 64))
-butter_surf.fill("yellow")
-butter_pos = (100, 100)
-butter_rect = butter_surf.get_rect(topleft=butter_pos)
-
-# attempt to make grid for item slots
+# Set up background grid of item slots
 grid_totalsize = 96
 grid_padding = 6
-grid_x = [(x * grid_totalsize) + grid_padding for x in range(5)]
-grid_y = [(y * grid_totalsize) + grid_padding + 64 for y in range(5)]
-grid_pos = [(x, y) for y in grid_y for x in grid_x]
+
+grid = Grid(grid_totalsize, grid_padding, 5, 5)
 
 grid_surf_size = grid_totalsize - grid_padding
 grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
 grid_surf.fill("grey")
-grid_rects = [grid_surf.get_rect(topleft=pos) for pos in grid_pos]
+grid_rects = [grid_surf.get_rect(topleft=pos) for pos in grid.positions]
 grid_centers = [rect.center for rect in grid_rects]
+
+# yellow box as placeholder
+butter_surf = pygame.Surface((PIXEL_SIZE, PIXEL_SIZE))
+butter_surf.fill("yellow")
+butter_pos = (100, 100)
+butter_rect = butter_surf.get_rect(topleft=butter_pos)
 
 # when an item is clicked and dragged around
 selected_item = False
@@ -66,11 +65,12 @@ while running:
 
     for rect in grid_rects:
         display_surface.blit(grid_surf, rect)
+
     display_surface.blit(butter_surf, butter_rect)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+    clock.tick(120)  # limits FPS to 120
 
 pygame.quit()
