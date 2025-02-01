@@ -4,6 +4,7 @@ import pygame
 
 from chickenpy.globals import PIXEL_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
 from chickenpy.grid import Grid
+from chickenpy.drawable import Drawable
 
 # basic setup and window
 pygame.init()
@@ -17,6 +18,7 @@ grid_padding = 6
 
 grid = Grid(grid_totalsize, grid_padding, 5, 5)
 
+#TODO: refactor into Grid class
 grid_surf_size = grid_totalsize - grid_padding
 grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
 grid_surf.fill("grey")
@@ -24,10 +26,11 @@ grid_rects = [grid_surf.get_rect(topleft=pos) for pos in grid.positions]
 grid_centers = [rect.center for rect in grid_rects]
 
 # yellow box as placeholder
-butter_surf = pygame.Surface((PIXEL_SIZE, PIXEL_SIZE))
-butter_surf.fill("yellow")
-butter_pos = (100, 100)
-butter_rect = butter_surf.get_rect(topleft=butter_pos)
+butter = Drawable(pygame.Surface((PIXEL_SIZE, PIXEL_SIZE)))
+
+# toy button
+button = pygame.Surface((32, 64))
+
 
 # when an item is clicked and dragged around
 selected_item = False
@@ -47,8 +50,8 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
-            if butter_rect.collidepoint(mouse_pos):
-                selected_item = butter_rect
+            if butter.rect.collidepoint(mouse_pos):
+                selected_item = butter.rect
 
         if event.type == pygame.MOUSEBUTTONUP and selected_item:
             # when dropping, snap to closest grid
@@ -61,12 +64,13 @@ while running:
             mouse_pos = event.pos
             selected_item.center = mouse_pos
 
+    # DRAW
     display_surface.fill("darkblue")
 
     for rect in grid_rects:
         display_surface.blit(grid_surf, rect)
 
-    display_surface.blit(butter_surf, butter_rect)
+    butter.draw(display_surface)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
