@@ -2,9 +2,9 @@ import math
 
 import pygame
 
-from chickenpy.globals import PIXEL_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
-from chickenpy.grid import Grid
+from chickenpy.cells import Cells
 from chickenpy.drawable import Drawable
+from chickenpy.globals import PIXEL_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # basic setup and window
 pygame.init()
@@ -16,9 +16,9 @@ running = True
 grid_totalsize = 96
 grid_padding = 6
 
-grid = Grid(grid_totalsize, grid_padding, 5, 5)
+grid = Cells(grid_totalsize, grid_padding, 5, 5)
 
-#TODO: refactor into Grid class
+# TODO: refactor into Grid class
 grid_surf_size = grid_totalsize - grid_padding
 grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
 grid_surf.fill("grey")
