@@ -20,7 +20,7 @@ class Cells:
         self.nx = nx
         self.ny = ny
         self.positions = self.index_positions()
-        self._occupied = [False] * self.nx * self.ny # all unoccupied by default
+        self._occupied = [False] * self.nx * self.ny  # all unoccupied by default
 
     def generate_positions(self) -> list[tuple]:
         """Generate a list of cell positions.
