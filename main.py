@@ -16,21 +16,19 @@ running = True
 grid_totalsize = 96
 grid_padding = 6
 
-grid = Cells(grid_totalsize, grid_padding, 5, 5)
+grid = Cells(grid_totalsize, grid_padding, 3, 2)
 
 # TODO: refactor into Grid class
 grid_surf_size = grid_totalsize - grid_padding
 grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
 grid_surf.fill("grey")
-grid_rects = [grid_surf.get_rect(topleft=pos) for pos in grid.positions]
-grid_centers = [rect.center for rect in grid_rects]
+grid_rects = [grid_surf.get_rect(topleft=pos) for _, pos in grid.positions.items()]
+grid_centers = [
+    rect.center for rect in grid_rects
+]  # Used for snapping sprites to middle of grid
 
-# yellow box as placeholder
-butter = Drawable(pygame.Surface((PIXEL_SIZE, PIXEL_SIZE)))
-
-# toy button
-button = pygame.Surface((32, 64))
-
+# Example Drawable. Consider moving to drawable.py
+carrot = Drawable.load_sprite("assets/sprites/png/carrot.png", scale=5)
 
 # when an item is clicked and dragged around
 selected_item = False
@@ -50,8 +48,8 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
-            if butter.rect.collidepoint(mouse_pos):
-                selected_item = butter.rect
+            if carrot.rect.collidepoint(mouse_pos):
+                selected_item = carrot.rect
 
         if event.type == pygame.MOUSEBUTTONUP and selected_item:
             # when dropping, snap to closest grid
@@ -70,7 +68,7 @@ while running:
     for rect in grid_rects:
         display_surface.blit(grid_surf, rect)
 
-    butter.draw(display_surface)
+    carrot.draw(display_surface)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
