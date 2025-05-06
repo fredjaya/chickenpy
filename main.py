@@ -4,7 +4,7 @@ import pygame
 
 from chickenpy.cells import Cells
 from chickenpy.drawable import Drawable
-from chickenpy.globals import PIXEL_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
+from chickenpy.globals import PIXEL_SIZE, SCALING_FACTOR, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # basic setup and window
 pygame.init()
@@ -27,8 +27,10 @@ grid_centers = [
     rect.center for rect in grid_rects
 ]  # Used for snapping sprites to middle of grid
 
-# Example Drawable. Consider moving to drawable.py
-carrot = Drawable.load_sprite("assets/sprites/png/carrot.png", scale=5)
+# Example Drawable. Consider creating in drawable.py
+carrot = Drawable.load_sprite("assets/sprites/png/carrot.png", scale=SCALING_FACTOR)
+sack = Drawable(pygame.Surface((PIXEL_SIZE, PIXEL_SIZE)))
+drawables = [carrot, sack]
 
 # when an item is clicked and dragged around
 selected_item = False
@@ -48,8 +50,9 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
-            if carrot.rect.collidepoint(mouse_pos):
-                selected_item = carrot.rect
+            for d in drawables:
+                if d.rect.collidepoint(mouse_pos):
+                    selected_item = d.rect
 
         if event.type == pygame.MOUSEBUTTONUP and selected_item:
             # when dropping, snap to closest grid
@@ -68,7 +71,8 @@ while running:
     for rect in grid_rects:
         display_surface.blit(grid_surf, rect)
 
-    carrot.draw(display_surface)
+    for d in drawables:
+        d.draw(display_surface)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

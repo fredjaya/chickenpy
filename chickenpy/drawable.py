@@ -8,13 +8,11 @@ class Drawable:
     """
 
     def __init__(self, surface: pygame.Surface, x: int = 0, y: int = 0, scale: int = 1):
-        if scale == 1:
-            self.surface = surface
-
-        else:
+        if scale != 1:
             width, height = surface.get_size()
             scaled_size = (width * scale, height * scale)
-            self.surface = pygame.transform.scale(surface, scaled_size)
+            surface = pygame.transform.scale(surface, scaled_size)
+        self.surface = surface
         self.rect = self.surface.get_rect(topleft=(x, y))
 
     @classmethod
