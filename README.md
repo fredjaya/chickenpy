@@ -1,6 +1,10 @@
 # chickenpy
 Object-oriented cooking simulator  
 
+Currently: simple snap-to-grid inventory system with custom sprites!
+
+![](assets/demo/carrot_snap.gif)
+
 ## dev  
 
 Uses [uv](https://docs.astral.sh/uv/) for project management.  
