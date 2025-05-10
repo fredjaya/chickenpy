@@ -3,7 +3,7 @@ import math
 import pygame
 
 from chickenpy.cells import Cells
-from chickenpy.drawable import Drawable
+from chickenpy.drawable import Drawable, Producer
 from chickenpy.globals import PIXEL_SIZE, SCALING_FACTOR, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # basic setup and window
@@ -50,16 +50,24 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
+            start_click = pygame.time.get_ticks()
+            # TODO: refactor to drawable container class
             for d in drawables:
                 if d.rect.collidepoint(mouse_pos):
                     selected_item = d.rect
 
         if event.type == pygame.MOUSEBUTTONUP and selected_item:
-            # when dropping, snap to closest grid
-            mouse_pos = event.pos
-            grid_idx = closest_center(mouse_pos, grid_centers)
-            selected_item.center = grid_centers[grid_idx]
-            selected_item = False
+            # Determine whether you're clicking or moving object
+            end_click = pygame.time.get_ticks()
+            click_duration = end_click - start_click
+            if click_duration < 200 and isinstance(selected_item, Producer):  # ms
+                selected_item.activate()
+            else:
+                # when dropping, snap to closest grid
+                mouse_pos = event.pos
+                grid_idx = closest_center(mouse_pos, grid_centers)
+                selected_item.center = grid_centers[grid_idx]
+                selected_item = False
 
         if event.type == pygame.MOUSEMOTION and selected_item:
             mouse_pos = event.pos
@@ -71,6 +79,7 @@ while running:
     for rect in grid_rects:
         display_surface.blit(grid_surf, rect)
 
+    # TODO: refactor to drawable container class
     for d in drawables:
         d.draw(display_surface)
 

@@ -23,6 +23,19 @@ class Drawable:
     def draw(self, surface):
         surface.blit(self.surface, self.rect)
 
+    def activate(self):
+        # Trigger action when clicked - do nothing if not Producer subclass
+        pass
+
+
+class Producer(Drawable):
+    def __init__(self, produces: list | str):
+        self.produces = produces  # items that the object will generate
+
+    def activate(self, grid_idx):
+        # overloads parent method.
+        pass
+
 
 # roux = Recipe("roux", ["butter", "flour"])
 # bechamel = Recipe("bechamel", ["roux", "milk"])
