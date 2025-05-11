@@ -20,7 +20,7 @@ class Drawable:
         surface = pygame.image.load(path).convert_alpha()
         return cls(surface, x, y, scale)
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.Surface):
         surface.blit(self.surface, self.rect)
 
     def activate(self):
