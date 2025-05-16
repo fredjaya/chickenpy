@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from chickenpy.drawable import Drawable
@@ -32,6 +34,7 @@ class CellGrid:
         self.padding_px = padding_px
         self.topleft_origin = topleft_origin  # start of very first cell
         self.cells = self._generate_cells()
+        self.cell_centers = self._rect_centers()
 
     def _generate_toplefts(self) -> list[tuple[int, int]]:
         """
@@ -59,3 +62,17 @@ class CellGrid:
     def draw_cells(self, surface: pygame.Surface):
         for cell in self.cells:
             cell.draw(surface)
+
+    def _all_rects(self) -> list:
+        return [cell.rect for cell in self.cells]
+
+    def _rect_centers(self) -> list:
+        # To allow snapping to Cells
+        rects = self._all_rects()
+        return [rect.center for rect in rects]
+
+    def closest_center(self, mouse_pos: tuple) -> int:
+        # return the rect center of the Cell that is closest to the pos
+        dists = [math.dist(mouse_pos, center_pos) for center_pos in self.cell_centers]
+        idx = dists.index(min(dists))
+        return self.cell_centers[idx]

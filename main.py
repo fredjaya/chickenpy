@@ -1,10 +1,8 @@
-import math
-
 import pygame
 
-from chickenpy.cells import Cells
+from chickenpy.cells import CellGrid
 from chickenpy.drawable import Drawable, Producer
-from chickenpy.globals import PIXEL_SIZE, SCALING_FACTOR, WINDOW_HEIGHT, WINDOW_WIDTH
+from chickenpy.globals import SCALING_FACTOR, SPRITE_PX, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # basic setup and window
 pygame.init()
@@ -12,35 +10,18 @@ display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
-# Set up background grid of item slots
-grid_totalsize = 96
-grid_padding = 6
+# New grids
+s = pygame.Surface((SPRITE_PX, SPRITE_PX))
+s.fill("grey")
+cell_grid = CellGrid(s, nx=3, ny=2, padding_px=6, topleft_origin=(24, 64))
 
-grid = Cells(grid_totalsize, grid_padding, 3, 2)
-
-# TODO: refactor into Grid class
-grid_surf_size = grid_totalsize - grid_padding
-grid_surf = pygame.Surface((grid_surf_size, grid_surf_size))
-grid_surf.fill("grey")
-grid_rects = [grid_surf.get_rect(topleft=pos) for _, pos in grid.positions.items()]
-grid_centers = [
-    rect.center for rect in grid_rects
-]  # Used for snapping sprites to middle of grid
 
 # Example Drawable. Consider creating in drawable.py
 carrot = Drawable.load_sprite("assets/sprites/png/carrot.png", scale=SCALING_FACTOR)
-sack = Drawable(pygame.Surface((PIXEL_SIZE, PIXEL_SIZE)))
-drawables = [carrot, sack]
+drawables = [carrot]
 
 # when an item is clicked and dragged around
 selected_item = False
-
-
-def closest_center(main_rect: pygame.Rect, rects: list[pygame.Rect]) -> int:
-    # return the index of the grid that's closest to a single (mouse) position
-    dists = [math.dist(main_rect, center_pos) for center_pos in rects]
-    return dists.index(min(dists))
-
 
 # Game loop
 while running:
@@ -56,7 +37,11 @@ while running:
                 if d.rect.collidepoint(mouse_pos):
                     selected_item = d.rect
 
-        if event.type == pygame.MOUSEBUTTONUP and selected_item:
+        if selected_item and event.type == pygame.MOUSEMOTION:
+            mouse_pos = event.pos
+            selected_item.center = mouse_pos
+
+        if selected_item and event.type == pygame.MOUSEBUTTONUP:
             # Determine whether you're clicking or moving object
             end_click = pygame.time.get_ticks()
             click_duration = end_click - start_click
@@ -65,19 +50,13 @@ while running:
             else:
                 # when dropping, snap to closest grid
                 mouse_pos = event.pos
-                grid_idx = closest_center(mouse_pos, grid_centers)
-                selected_item.center = grid_centers[grid_idx]
+                selected_item.center = cell_grid.closest_center(mouse_pos)
                 selected_item = False
 
-        if event.type == pygame.MOUSEMOTION and selected_item:
-            mouse_pos = event.pos
-            selected_item.center = mouse_pos
-
-    # DRAW
     display_surface.fill("darkblue")
 
-    for rect in grid_rects:
-        display_surface.blit(grid_surf, rect)
+    # DRAW
+    cell_grid.draw_cells(display_surface)
 
     # TODO: refactor to drawable container class
     for d in drawables:
